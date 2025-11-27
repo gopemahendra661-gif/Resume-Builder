@@ -1,0 +1,5 @@
+{
+  "name": "AI Resume Architect",
+  "description": "A 100% client-side Resume Analyzer and Builder. Analyze your resume against ATS standards or build a new one with professional templates.",
+  "requestFramePermissions": []
+}
