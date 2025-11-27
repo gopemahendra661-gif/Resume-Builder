@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, Menu, X, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, FileText, Menu, X, Sun, Moon, Home } from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface LayoutProps {
   children: React.ReactNode;
-  currentPage: 'analyzer' | 'builder';
-  onNavigate: (page: 'analyzer' | 'builder') => void;
+  currentPage: 'landing' | 'analyzer' | 'builder';
+  onNavigate: (page: 'landing' | 'analyzer' | 'builder') => void;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigate }) => {
@@ -35,7 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
     }
   };
 
-  const NavItem = ({ page, icon: Icon, label }: { page: 'analyzer' | 'builder', icon: any, label: string }) => (
+  const NavItem = ({ page, icon: Icon, label }: { page: 'landing' | 'analyzer' | 'builder', icon: any, label: string }) => (
     <button
       onClick={() => {
         onNavigate(page);
@@ -81,6 +81,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
             </button>
           </div>
           <nav className="p-4 space-y-2">
+            <NavItem page="landing" icon={Home} label="Home" />
             <NavItem page="analyzer" icon={LayoutDashboard} label="Resume Analyzer" />
             <NavItem page="builder" icon={FileText} label="Resume Builder" />
           </nav>
@@ -95,7 +96,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         )}
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-gray-50 dark:bg-gray-900">
+        <main className={clsx(
+            "flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-all",
+            currentPage !== 'landing' && "p-4 lg:p-8" // Add padding only for app pages, not landing
+          )}>
           {children}
         </main>
       </div>
