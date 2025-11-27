@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ResumeData, Education, Experience, TemplateType } from '../types';
 import { ModernTemplate, MinimalTemplate, ProfessionalTemplate, CreativeTemplate, ExecutiveTemplate } from '../components/ResumeTemplates';
-import { Plus, Trash2, Download, LayoutTemplate, Upload, X } from 'lucide-react';
+import { Plus, Trash2, Download, LayoutTemplate, Upload, X, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const initialData: ResumeData = {
@@ -28,11 +28,58 @@ export const Builder: React.FC = () => {
   });
   const [template, setTemplate] = useState<TemplateType>('modern');
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
+  const [scale, setScale] = useState(0.6);
+  const [isAutoFit, setIsAutoFit] = useState(true);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem('resumeData', JSON.stringify(data));
   }, [data]);
+
+  // Auto-fit logic
+  const fitToScreen = useCallback(() => {
+    if (!containerRef.current) return;
+    const containerWidth = containerRef.current.clientWidth;
+    const padding = 64; // 32px padding on each side
+    const targetWidth = 794; // A4 width in pixels at 96 DPI
+    
+    // Calculate scale to fit width with some padding
+    const newScale = Math.min(1, (containerWidth - padding) / targetWidth);
+    setScale(Math.max(0.3, newScale)); // Minimum scale 0.3
+    setIsAutoFit(true);
+  }, []);
+
+  // Initial fit and resize listener
+  useEffect(() => {
+    fitToScreen();
+    
+    const handleResize = () => {
+      if (isAutoFit) fitToScreen();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [fitToScreen, isAutoFit]);
+
+  // Re-calculate when switching tabs to preview
+  useEffect(() => {
+    if (activeTab === 'preview' || (window.innerWidth >= 1024)) {
+      setTimeout(fitToScreen, 100);
+    }
+  }, [activeTab, fitToScreen]);
+
+  const handleZoomIn = () => {
+    setIsAutoFit(false);
+    setScale(prev => Math.min(1.5, prev + 0.1));
+  };
+
+  const handleZoomOut = () => {
+    setIsAutoFit(false);
+    setScale(prev => Math.max(0.3, prev - 0.1));
+  };
 
   const handleChange = (field: keyof ResumeData, value: string) => {
     setData(prev => ({ ...prev, [field]: value }));
@@ -90,14 +137,24 @@ export const Builder: React.FC = () => {
   const exportPDF = () => {
     const element = document.getElementById('resume-preview-content');
     if (!element) return;
+    
+    // Clone the element to avoid disrupting the UI
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.style.transform = 'scale(1)';
+    clone.style.margin = '0';
+    document.body.appendChild(clone); // Append to body temporarily
+
     const opt = {
       margin: 0,
       filename: `Resume_${data.fullName.replace(/\s+/g, '_')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    window.html2pdf().set(opt).from(element).save();
+
+    window.html2pdf().set(opt).from(clone).save().then(() => {
+      document.body.removeChild(clone); // Cleanup
+    });
   };
 
   // Helper for Input fields
@@ -160,13 +217,12 @@ export const Builder: React.FC = () => {
           activeTab === 'preview' && "hidden lg:block"
         )}>
           
-          {/* Template Selector - Fixed Layout */}
+          {/* Template Selector */}
           <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <h3 className="text-sm font-bold uppercase text-gray-500 mb-4 flex items-center">
               <LayoutTemplate className="w-4 h-4 mr-2" />
               Choose Template
             </h3>
-            {/* Flex wrap instead of Grid to prevent overlap */}
             <div className="flex flex-wrap gap-3">
               {(['modern', 'minimal', 'professional', 'creative', 'executive'] as const).map(t => (
                 <button
@@ -291,17 +347,47 @@ export const Builder: React.FC = () => {
           </div>
         </div>
 
-        {/* Preview Panel */}
-        <div className={clsx(
-          "flex-1 bg-gray-200 dark:bg-gray-900/50 overflow-auto rounded-xl border border-gray-300 dark:border-gray-700 flex justify-center p-8",
-          activeTab === 'editor' && "hidden lg:flex"
-        )}>
-          <div className="w-[210mm] min-w-[210mm] shadow-2xl origin-top transform scale-[0.5] sm:scale-[0.6] md:scale-[0.7] lg:scale-[0.65] xl:scale-[0.85] 2xl:scale-[0.95] transition-transform duration-300">
-             {template === 'modern' && <ModernTemplate data={data} />}
-             {template === 'minimal' && <MinimalTemplate data={data} />}
-             {template === 'professional' && <ProfessionalTemplate data={data} />}
-             {template === 'creative' && <CreativeTemplate data={data} />}
-             {template === 'executive' && <ExecutiveTemplate data={data} />}
+        {/* Preview Panel - Fixed & Responsive */}
+        <div 
+          ref={containerRef}
+          className={clsx(
+            "flex-1 bg-gray-200 dark:bg-gray-900/50 overflow-auto rounded-xl border border-gray-300 dark:border-gray-700 relative",
+            activeTab === 'editor' && "hidden lg:block"
+          )}
+        >
+          {/* Zoom Controls */}
+          <div className="absolute bottom-6 right-6 z-10 flex flex-col gap-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2 border dark:border-gray-700">
+            <button onClick={handleZoomIn} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-200" title="Zoom In">
+              <ZoomIn size={20} />
+            </button>
+            <button onClick={handleZoomOut} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-200" title="Zoom Out">
+              <ZoomOut size={20} />
+            </button>
+            <button onClick={fitToScreen} className={clsx("p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md text-gray-700 dark:text-gray-200", isAutoFit && "text-primary-600 bg-primary-50 dark:bg-primary-900/20")} title="Fit to Screen">
+              <Maximize size={20} />
+            </button>
+          </div>
+
+          {/* Resume Rendering Area */}
+          <div className="min-h-full flex justify-center p-8 transition-all">
+            <div 
+              ref={contentRef}
+              style={{ 
+                transform: `scale(${scale})`, 
+                transformOrigin: 'top center',
+                width: '210mm',
+                minWidth: '210mm',
+                height: '297mm', // Approximate A4 height
+                marginBottom: `-${(1 - scale) * 297}mm` // Compensate for extra vertical whitespace when scaled down
+              }}
+              className="bg-white shadow-2xl transition-transform duration-200 ease-out"
+            >
+              {template === 'modern' && <ModernTemplate data={data} />}
+              {template === 'minimal' && <MinimalTemplate data={data} />}
+              {template === 'professional' && <ProfessionalTemplate data={data} />}
+              {template === 'creative' && <CreativeTemplate data={data} />}
+              {template === 'executive' && <ExecutiveTemplate data={data} />}
+            </div>
           </div>
         </div>
       </div>
