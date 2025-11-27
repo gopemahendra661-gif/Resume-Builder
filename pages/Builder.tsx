@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { ResumeData, Education, Experience, TemplateType } from '../types';
-import { ModernTemplate, MinimalTemplate, ProfessionalTemplate } from '../components/ResumeTemplates';
-import { Plus, Trash2, Download, Eye, LayoutTemplate } from 'lucide-react';
+import { ModernTemplate, MinimalTemplate, ProfessionalTemplate, CreativeTemplate, ExecutiveTemplate } from '../components/ResumeTemplates';
+import { Plus, Trash2, Download, LayoutTemplate, Upload, X } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const initialData: ResumeData = {
@@ -27,6 +28,7 @@ export const Builder: React.FC = () => {
   });
   const [template, setTemplate] = useState<TemplateType>('modern');
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     localStorage.setItem('resumeData', JSON.stringify(data));
@@ -34,6 +36,26 @@ export const Builder: React.FC = () => {
 
   const handleChange = (field: keyof ResumeData, value: string) => {
     setData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("File size too large. Please upload an image under 2MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setData(prev => ({ ...prev, photoUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removePhoto = () => {
+    setData(prev => ({ ...prev, photoUrl: undefined }));
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleArrayChange = (section: 'education' | 'experience', id: string, field: string, value: string) => {
@@ -72,7 +94,7 @@ export const Builder: React.FC = () => {
       margin: 0,
       filename: `Resume_${data.fullName.replace(/\s+/g, '_')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
+      html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     window.html2pdf().set(opt).from(element).save();
@@ -140,8 +162,8 @@ export const Builder: React.FC = () => {
               <LayoutTemplate className="w-4 h-4 mr-2" />
               Choose Template
             </h3>
-            <div className="grid grid-cols-3 gap-2">
-              {(['modern', 'minimal', 'professional'] as const).map(t => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+              {(['modern', 'minimal', 'professional', 'creative', 'executive'] as const).map(t => (
                 <button
                   key={t}
                   onClick={() => setTemplate(t)}
@@ -160,6 +182,41 @@ export const Builder: React.FC = () => {
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">Personal Info</h2>
+            
+            {/* Photo Upload */}
+            <div className="mb-6 flex items-center gap-4">
+              <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-gray-600">
+                {data.photoUrl ? (
+                  <img src={data.photoUrl} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <Upload className="text-gray-400" size={24} />
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-sm px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md font-medium transition-colors"
+                >
+                  Upload Photo
+                </button>
+                {data.photoUrl && (
+                  <button 
+                    onClick={removePhoto}
+                    className="text-xs text-red-500 hover:text-red-600 flex items-center"
+                  >
+                    <X size={12} className="mr-1" /> Remove
+                  </button>
+                )}
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  className="hidden" 
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputGroup label="Full Name" value={data.fullName} onChange={(v: string) => handleChange('fullName', v)} />
               <InputGroup label="Job Title / Headline" value={data.location} onChange={(v: string) => handleChange('location', v)} placeholder="e.g. Software Engineer, London" />
@@ -229,6 +286,8 @@ export const Builder: React.FC = () => {
              {template === 'modern' && <ModernTemplate data={data} />}
              {template === 'minimal' && <MinimalTemplate data={data} />}
              {template === 'professional' && <ProfessionalTemplate data={data} />}
+             {template === 'creative' && <CreativeTemplate data={data} />}
+             {template === 'executive' && <ExecutiveTemplate data={data} />}
           </div>
         </div>
       </div>

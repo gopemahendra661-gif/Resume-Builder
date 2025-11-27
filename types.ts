@@ -1,3 +1,4 @@
+
 export interface ResumeScore {
   overall: number;
   keywordMatch: number;
@@ -37,9 +38,10 @@ export interface ResumeData {
   education: Education[];
   experience: Experience[];
   skills: string; // Comma separated for editing, array for display
+  photoUrl?: string;
 }
 
-export type TemplateType = 'modern' | 'minimal' | 'professional';
+export type TemplateType = 'modern' | 'minimal' | 'professional' | 'creative' | 'executive';
 
 // Define global types for libraries loaded via CDN
 declare global {
