@@ -21,6 +21,39 @@ const initialData: ResumeData = {
   skills: "JavaScript, React, Node.js, TypeScript, AWS, Docker"
 };
 
+interface InputGroupProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  type?: string;
+  textArea?: boolean;
+}
+
+// Helper for Input fields - Defined outside to prevent re-mounting focus loss
+const InputGroup: React.FC<InputGroupProps> = ({ label, value, onChange, placeholder, type = "text", textArea = false }) => (
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
+    {textArea ? (
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        rows={4}
+        className="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm p-2 border resize-y"
+      />
+    ) : (
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm p-2 border"
+      />
+    )}
+  </div>
+);
+
 export const Builder: React.FC = () => {
   const [data, setData] = useState<ResumeData>(() => {
     const saved = localStorage.getItem('resumeData');
@@ -156,30 +189,6 @@ export const Builder: React.FC = () => {
       document.body.removeChild(clone); // Cleanup
     });
   };
-
-  // Helper for Input fields
-  const InputGroup = ({ label, value, onChange, placeholder, type = "text", textArea = false }: any) => (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
-      {textArea ? (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          rows={4}
-          className="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm p-2 border"
-        />
-      ) : (
-        <input
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm p-2 border"
-        />
-      )}
-    </div>
-  );
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
