@@ -5,8 +5,8 @@ import { AdsterraBanner } from './AdsterraBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
-  currentPage: 'landing' | 'analyzer' | 'builder';
-  onNavigate: (page: 'landing' | 'analyzer' | 'builder') => void;
+  currentPage: 'landing' | 'analyzer' | 'builder' | 'blog';
+  onNavigate: (page: 'landing' | 'analyzer' | 'builder' | 'blog', slug?: string) => void;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigate }) => {

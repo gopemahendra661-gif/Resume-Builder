@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 import { AdsterraNative } from '../components/AdsterraBanner';
 
 interface LandingPageProps {
-  onNavigate: (page: 'landing' | 'analyzer' | 'builder') => void;
+  onNavigate: (page: 'landing' | 'analyzer' | 'builder' | 'blog', slug?: string) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
@@ -196,30 +196,42 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Latest Career Advice</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-48 bg-gray-200 dark:bg-gray-700 w-full"></div>
+              <div className="h-48 overflow-hidden w-full">
+                <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=600" alt="ATS Resume" className="w-full h-full object-cover" />
+              </div>
               <div className="p-6">
                 <div className="text-primary-600 text-sm font-semibold mb-2">Resume Tips</div>
                 <h3 className="text-xl font-bold mb-3 dark:text-white">How to Beat the ATS Bots in 2024</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Learn the secrets to formatting your resume so it passes automated screening software.</p>
-                <a href="#" className="text-primary-600 font-medium hover:underline flex items-center">Read More <ChevronRight size={16} /></a>
+                <button onClick={() => onNavigate('blog', 'how-to-beat-ats-bots-2024')} className="text-primary-600 font-medium hover:underline flex items-center">
+                  Read More <ChevronRight size={16} />
+                </button>
               </div>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-48 bg-gray-200 dark:bg-gray-700 w-full"></div>
+              <div className="h-48 overflow-hidden w-full">
+                <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=600" alt="Soft Skills" className="w-full h-full object-cover" />
+              </div>
               <div className="p-6">
                 <div className="text-primary-600 text-sm font-semibold mb-2">Career Growth</div>
                 <h3 className="text-xl font-bold mb-3 dark:text-white">Top 10 Soft Skills Recruiters Want</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Technical skills get you the interview, but soft skills get you the job.</p>
-                <a href="#" className="text-primary-600 font-medium hover:underline flex items-center">Read More <ChevronRight size={16} /></a>
+                <button onClick={() => onNavigate('blog', 'top-10-soft-skills-recruiters-want')} className="text-primary-600 font-medium hover:underline flex items-center">
+                  Read More <ChevronRight size={16} />
+                </button>
               </div>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-48 bg-gray-200 dark:bg-gray-700 w-full"></div>
+              <div className="h-48 overflow-hidden w-full">
+                <img src="https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?auto=format&fit=crop&q=80&w=600" alt="Resume vs CV" className="w-full h-full object-cover" />
+              </div>
               <div className="p-6">
                 <div className="text-primary-600 text-sm font-semibold mb-2">Job Search</div>
                 <h3 className="text-xl font-bold mb-3 dark:text-white">Resume vs CV: What's the Difference?</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Understanding when to use a Curriculum Vitae versus a standard Resume.</p>
-                <a href="#" className="text-primary-600 font-medium hover:underline flex items-center">Read More <ChevronRight size={16} /></a>
+                <button onClick={() => onNavigate('blog', 'resume-vs-cv-difference')} className="text-primary-600 font-medium hover:underline flex items-center">
+                  Read More <ChevronRight size={16} />
+                </button>
               </div>
             </div>
           </div>
