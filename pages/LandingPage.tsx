@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { FileText, CheckCircle, Zap, Shield, ChevronRight, Star, ArrowRight, Layout, Download } from 'lucide-react';
 import { clsx } from 'clsx';
+import { AdsterraNative } from '../components/AdsterraBanner';
 
 interface LandingPageProps {
   onNavigate: (page: 'landing' | 'analyzer' | 'builder') => void;
@@ -90,6 +91,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
         </div>
       </section>
+
+      {/* 3️⃣ CONTENT AREA NATIVE / POP AD - Placed between sections for natural flow */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AdsterraNative />
+      </div>
 
       {/* How It Works */}
       <section className="py-20 bg-white dark:bg-gray-900">

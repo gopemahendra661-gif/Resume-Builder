@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, FileText, Menu, X, Sun, Moon, Home } from 'lucide-react';
 import { clsx } from 'clsx';
+import { AdsterraBanner } from './AdsterraBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -54,7 +55,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 flex flex-col">
       {/* Mobile Header */}
       <div className="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm sticky top-0 z-20">
         <div className="font-bold text-xl text-primary-600 dark:text-primary-400">ResumeAI</div>
@@ -68,7 +69,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         </div>
       </div>
 
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar */}
         <aside className={clsx(
           "fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 border-r dark:border-gray-700 transform transition-transform duration-300 lg:translate-x-0 lg:static lg:block shadow-lg lg:shadow-none",
@@ -96,12 +97,51 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         )}
 
         {/* Main Content */}
-        <main className={clsx(
-            "flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-all",
-            currentPage !== 'landing' && "p-4 lg:p-8" // Add padding only for app pages, not landing
+        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-all flex flex-col">
+          
+          {/* 2️⃣ DESKTOP TOP BANNER (728x90) - Only visible on Large Screens */}
+          <div className="hidden lg:flex w-full justify-center py-4 bg-gray-100 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 min-h-[100px]">
+             <AdsterraBanner 
+               width={728} 
+               height={90} 
+               scriptUrl="https://www.highperformanceformat.com/26aa998c7f8f500763ab79ff28f6e548/invoke.js"
+               atOptions={{
+                 'key' : '26aa998c7f8f500763ab79ff28f6e548',
+                 'format' : 'iframe',
+                 'height' : 90,
+                 'width' : 728,
+                 'params' : {}
+               }}
+             />
+          </div>
+
+          <div className={clsx(
+            "flex-1",
+            currentPage !== 'landing' && "p-4 lg:p-8"
           )}>
-          {children}
+            {children}
+          </div>
+
+          {/* Spacer for Mobile Bottom Ad */}
+          <div className="h-[60px] lg:hidden w-full shrink-0"></div>
         </main>
+      </div>
+
+      {/* 1️⃣ MOBILE BOTTOM BANNER (320x50) - Only visible on Mobile (< 1024px) */}
+      <div className="lg:hidden fixed bottom-0 left-0 w-full z-50 bg-white dark:bg-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] border-t border-gray-200 dark:border-gray-700 flex justify-center items-center p-1">
+        <AdsterraBanner 
+          width={320} 
+          height={50} 
+          closeable={true}
+          scriptUrl="https://www.highperformanceformat.com/2ce8af569998ad9deec21056f958bdd6/invoke.js"
+          atOptions={{
+            'key' : '2ce8af569998ad9deec21056f958bdd6',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+          }}
+        />
       </div>
     </div>
   );
