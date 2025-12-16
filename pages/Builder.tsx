@@ -1,7 +1,10 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ResumeData, Education, Experience, TemplateType } from '../types';
-import { ModernTemplate, MinimalTemplate, ProfessionalTemplate, CreativeTemplate, ExecutiveTemplate } from '../components/ResumeTemplates';
+import { 
+  ModernTemplate, MinimalTemplate, ProfessionalTemplate, CreativeTemplate, ExecutiveTemplate,
+  VibrantTemplate, ElegantTemplate, TechTemplate, CompactTemplate, BoldTemplate
+} from '../components/ResumeTemplates';
 import { Plus, Trash2, Download, LayoutTemplate, Upload, X, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -190,6 +193,11 @@ export const Builder: React.FC = () => {
     });
   };
 
+  const allTemplates: TemplateType[] = [
+    'modern', 'minimal', 'professional', 'creative', 'executive',
+    'vibrant', 'elegant', 'tech', 'compact', 'bold'
+  ];
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Toolbar */}
@@ -233,7 +241,7 @@ export const Builder: React.FC = () => {
               Choose Template
             </h3>
             <div className="flex flex-wrap gap-3">
-              {(['modern', 'minimal', 'professional', 'creative', 'executive'] as const).map(t => (
+              {allTemplates.map(t => (
                 <button
                   key={t}
                   onClick={() => setTemplate(t)}
@@ -396,6 +404,11 @@ export const Builder: React.FC = () => {
               {template === 'professional' && <ProfessionalTemplate data={data} />}
               {template === 'creative' && <CreativeTemplate data={data} />}
               {template === 'executive' && <ExecutiveTemplate data={data} />}
+              {template === 'vibrant' && <VibrantTemplate data={data} />}
+              {template === 'elegant' && <ElegantTemplate data={data} />}
+              {template === 'tech' && <TechTemplate data={data} />}
+              {template === 'compact' && <CompactTemplate data={data} />}
+              {template === 'bold' && <BoldTemplate data={data} />}
             </div>
           </div>
         </div>

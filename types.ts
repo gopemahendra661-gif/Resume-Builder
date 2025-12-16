@@ -41,7 +41,17 @@ export interface ResumeData {
   photoUrl?: string;
 }
 
-export type TemplateType = 'modern' | 'minimal' | 'professional' | 'creative' | 'executive';
+export type TemplateType = 
+  | 'modern' 
+  | 'minimal' 
+  | 'professional' 
+  | 'creative' 
+  | 'executive'
+  | 'vibrant'
+  | 'elegant'
+  | 'tech'
+  | 'compact'
+  | 'bold';
 
 // Define global types for libraries loaded via CDN
 declare global {

@@ -6,6 +6,8 @@ interface TemplateProps {
   data: ResumeData;
 }
 
+/* ================= EXISTING TEMPLATES ================= */
+
 export const ModernTemplate: React.FC<TemplateProps> = ({ data }) => (
   <div className="p-8 bg-white text-gray-800 font-sans min-h-[1123px]" id="resume-preview-content">
     <header className="border-b-2 border-gray-800 pb-4 mb-6 flex justify-between items-start">
@@ -363,6 +365,376 @@ export const ExecutiveTemplate: React.FC<TemplateProps> = ({ data }) => (
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  </div>
+);
+
+/* ================= NEW TEMPLATES (Added based on request) ================= */
+
+export const VibrantTemplate: React.FC<TemplateProps> = ({ data }) => (
+  <div className="flex min-h-[1123px] bg-white font-sans" id="resume-preview-content">
+    {/* Left Column (Emerald) */}
+    <div className="w-[35%] bg-emerald-700 text-white p-6 flex flex-col gap-6">
+       <div className="text-center">
+         {data.photoUrl && (
+           <img src={data.photoUrl} alt="Profile" className="w-32 h-32 mx-auto rounded-full object-cover border-4 border-emerald-500 mb-4" />
+         )}
+         <h1 className="text-2xl font-bold leading-tight mb-2">{data.fullName}</h1>
+         <p className="text-emerald-100 text-sm">{data.location}</p>
+       </div>
+
+       <div className="space-y-4">
+         <h3 className="text-emerald-300 text-xs font-bold uppercase tracking-wider border-b border-emerald-600 pb-1">Contact</h3>
+         <div className="text-sm space-y-2 break-words">
+           <div>{data.email}</div>
+           <div>{data.phone}</div>
+           <div>{data.website}</div>
+         </div>
+       </div>
+
+       <div className="space-y-4">
+         <h3 className="text-emerald-300 text-xs font-bold uppercase tracking-wider border-b border-emerald-600 pb-1">Skills</h3>
+         <div className="flex flex-wrap gap-2">
+           {data.skills.split(',').map((s, i) => (
+             <span key={i} className="bg-emerald-800 px-2 py-1 rounded text-xs">{s.trim()}</span>
+           ))}
+         </div>
+       </div>
+
+       {data.education.length > 0 && (
+         <div className="space-y-4">
+           <h3 className="text-emerald-300 text-xs font-bold uppercase tracking-wider border-b border-emerald-600 pb-1">Education</h3>
+           {data.education.map((edu) => (
+             <div key={edu.id} className="text-sm">
+               <div className="font-bold">{edu.degree}</div>
+               <div className="text-emerald-200">{edu.school}</div>
+               <div className="text-xs text-emerald-300 italic">{edu.year}</div>
+             </div>
+           ))}
+         </div>
+       )}
+    </div>
+
+    {/* Right Column */}
+    <div className="w-[65%] p-8">
+      {data.summary && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-emerald-800 mb-3 border-b-2 border-emerald-100 pb-2">Profile</h2>
+          <p className="text-gray-600 text-sm leading-relaxed">{data.summary}</p>
+        </div>
+      )}
+
+      <div>
+        <h2 className="text-2xl font-bold text-emerald-800 mb-6 border-b-2 border-emerald-100 pb-2">Experience</h2>
+        <div className="space-y-6">
+          {data.experience.map((exp) => (
+            <div key={exp.id}>
+              <div className="flex justify-between items-center mb-1">
+                <h3 className="text-lg font-bold text-gray-800">{exp.role}</h3>
+                <span className="text-xs font-bold bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full">{exp.duration}</span>
+              </div>
+              <div className="text-sm font-semibold text-emerald-600 mb-2">{exp.company}, {exp.city}</div>
+              <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{exp.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+export const ElegantTemplate: React.FC<TemplateProps> = ({ data }) => (
+  <div className="p-10 bg-stone-50 text-stone-900 font-serif min-h-[1123px]" id="resume-preview-content">
+    {/* Header */}
+    <header className="text-center mb-10 border-b border-stone-300 pb-8">
+      <h1 className="text-4xl font-normal tracking-wider uppercase mb-3 text-stone-800">{data.fullName}</h1>
+      <div className="flex justify-center gap-4 text-sm text-stone-600 font-light">
+        <span>{data.location}</span>
+        <span>•</span>
+        <span>{data.email}</span>
+        <span>•</span>
+        <span>{data.phone}</span>
+      </div>
+    </header>
+
+    {/* Layout Split */}
+    <div className="flex gap-8">
+      {/* Main Column */}
+      <div className="w-2/3">
+        {data.summary && (
+          <section className="mb-8">
+            <h2 className="text-lg font-normal uppercase tracking-widest text-stone-500 mb-4">About Me</h2>
+            <p className="text-sm leading-7 text-stone-700">{data.summary}</p>
+          </section>
+        )}
+
+        <section>
+          <h2 className="text-lg font-normal uppercase tracking-widest text-stone-500 mb-6">Experience</h2>
+          <div className="space-y-8">
+            {data.experience.map((exp) => (
+              <div key={exp.id} className="relative pl-6 border-l border-stone-300">
+                <div className="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-stone-300"></div>
+                <h3 className="font-bold text-lg text-stone-800">{exp.company}</h3>
+                <div className="flex justify-between text-stone-500 text-sm mb-3 italic">
+                  <span>{exp.role}</span>
+                  <span>{exp.duration}</span>
+                </div>
+                <p className="text-sm text-stone-700 leading-6">{exp.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Side Column */}
+      <div className="w-1/3 space-y-8 border-l border-stone-200 pl-8">
+        <section>
+          <h2 className="text-sm font-bold uppercase tracking-widest text-stone-400 mb-4">Education</h2>
+          {data.education.map((edu) => (
+            <div key={edu.id} className="mb-4">
+              <div className="font-bold text-stone-800">{edu.school}</div>
+              <div className="text-sm text-stone-600">{edu.degree}</div>
+              <div className="text-xs text-stone-400 mt-1">{edu.year}</div>
+            </div>
+          ))}
+        </section>
+
+        <section>
+          <h2 className="text-sm font-bold uppercase tracking-widest text-stone-400 mb-4">Expertise</h2>
+          <div className="flex flex-col gap-2">
+            {data.skills.split(',').map((skill, i) => (
+              <span key={i} className="text-sm text-stone-700 border-b border-stone-200 pb-1">
+                {skill.trim()}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        {data.website && (
+          <section>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-stone-400 mb-4">Links</h2>
+            <div className="text-sm text-stone-700 break-all">{data.website}</div>
+          </section>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+export const TechTemplate: React.FC<TemplateProps> = ({ data }) => (
+  <div className="min-h-[1123px] bg-slate-50 font-mono text-slate-800" id="resume-preview-content">
+    {/* Dark Tech Header */}
+    <header className="bg-slate-900 text-cyan-400 p-8">
+      <h1 className="text-4xl font-bold mb-2">
+        <span className="text-white">&lt;</span>
+        {data.fullName} 
+        <span className="text-white">/&gt;</span>
+      </h1>
+      <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+        <span>{data.email}</span>
+        <span>// {data.phone}</span>
+        <span>// {data.location}</span>
+      </div>
+    </header>
+
+    <div className="p-8 grid grid-cols-12 gap-8">
+      <div className="col-span-12">
+        <div className="p-4 bg-white border-l-4 border-cyan-500 shadow-sm">
+          <p className="text-sm leading-relaxed">{data.summary}</p>
+        </div>
+      </div>
+
+      <div className="col-span-8 space-y-8">
+        <section>
+          <h2 className="text-xl font-bold text-slate-900 border-b-2 border-slate-200 pb-2 mb-4">
+            <span className="text-cyan-600">const</span> Experience = [
+          </h2>
+          <div className="space-y-6 pl-4 border-l border-dashed border-slate-300">
+            {data.experience.map((exp) => (
+              <div key={exp.id} className="relative">
+                <div className="absolute -left-[21px] top-1 text-cyan-500">●</div>
+                <div className="flex justify-between items-start mb-1">
+                  <h3 className="font-bold text-lg">{exp.role}</h3>
+                  <span className="text-xs bg-slate-200 px-2 py-1 rounded">{exp.duration}</span>
+                </div>
+                <div className="text-cyan-700 text-sm font-bold mb-2">@ {exp.company}</div>
+                <p className="text-sm leading-relaxed">{exp.description}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-xl font-bold text-slate-900">];</div>
+        </section>
+      </div>
+
+      <div className="col-span-4 space-y-8">
+        <section>
+          <h2 className="text-sm font-bold text-slate-900 uppercase mb-4">
+            <span className="text-cyan-600">import</span> Skills
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {data.skills.split(',').map((s, i) => (
+              <span key={i} className="px-2 py-1 bg-slate-900 text-cyan-400 text-xs rounded-md font-bold">
+                {s.trim()}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-bold text-slate-900 uppercase mb-4">
+            <span className="text-cyan-600">import</span> Education
+          </h2>
+          <div className="space-y-4">
+            {data.education.map((edu) => (
+              <div key={edu.id} className="bg-white p-3 border border-slate-200 shadow-sm rounded">
+                <div className="font-bold text-sm">{edu.school}</div>
+                <div className="text-xs text-slate-500">{edu.degree}</div>
+                <div className="text-xs text-right text-cyan-600 mt-1">{edu.year}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+);
+
+export const CompactTemplate: React.FC<TemplateProps> = ({ data }) => (
+  <div className="p-6 bg-white text-gray-900 font-sans min-h-[1123px] text-sm" id="resume-preview-content">
+    <header className="border-b-4 border-gray-900 pb-4 mb-4">
+      <h1 className="text-3xl font-black uppercase mb-1">{data.fullName}</h1>
+      <div className="flex justify-between items-center text-xs font-semibold text-gray-600">
+        <div className="flex gap-4">
+           <span>{data.email}</span>
+           <span>{data.phone}</span>
+        </div>
+        <div className="flex gap-4">
+           <span>{data.location}</span>
+           <span>{data.website}</span>
+        </div>
+      </div>
+    </header>
+
+    <div className="grid grid-cols-3 gap-6 h-full">
+       {/* Left narrow column */}
+       <div className="col-span-1 space-y-6">
+          {data.education.length > 0 && (
+            <section>
+               <h3 className="font-black uppercase text-sm border-b-2 border-gray-200 mb-2">Education</h3>
+               {data.education.map((edu) => (
+                 <div key={edu.id} className="mb-3">
+                   <div className="font-bold">{edu.school}</div>
+                   <div>{edu.degree}</div>
+                   <div className="text-gray-500 text-xs">{edu.year}</div>
+                 </div>
+               ))}
+            </section>
+          )}
+
+          <section>
+             <h3 className="font-black uppercase text-sm border-b-2 border-gray-200 mb-2">Skills</h3>
+             <ul className="list-disc list-inside space-y-1 text-xs">
+               {data.skills.split(',').map((s, i) => (
+                 <li key={i}>{s.trim()}</li>
+               ))}
+             </ul>
+          </section>
+       </div>
+
+       {/* Right wide column */}
+       <div className="col-span-2 space-y-6">
+          {data.summary && (
+            <section>
+               <h3 className="font-black uppercase text-sm border-b-2 border-gray-200 mb-2">Profile</h3>
+               <p className="text-xs leading-5 text-justify">{data.summary}</p>
+            </section>
+          )}
+
+          <section>
+             <h3 className="font-black uppercase text-sm border-b-2 border-gray-200 mb-3">Professional Experience</h3>
+             <div className="space-y-4">
+               {data.experience.map((exp) => (
+                 <div key={exp.id}>
+                    <div className="flex justify-between items-end mb-1">
+                      <h4 className="font-bold text-base">{exp.company}</h4>
+                      <span className="text-xs font-bold bg-gray-100 px-2 py-0.5 rounded">{exp.duration}</span>
+                    </div>
+                    <div className="text-xs font-semibold text-gray-600 italic mb-1">{exp.role} | {exp.city}</div>
+                    <p className="text-xs leading-5 text-justify">{exp.description}</p>
+                 </div>
+               ))}
+             </div>
+          </section>
+       </div>
+    </div>
+  </div>
+);
+
+export const BoldTemplate: React.FC<TemplateProps> = ({ data }) => (
+  <div className="p-8 bg-white text-black font-sans min-h-[1123px] border-8 border-black m-4" id="resume-preview-content">
+    <div className="bg-black text-white p-6 -mt-8 -mx-8 mb-8">
+      <h1 className="text-5xl font-extrabold uppercase tracking-tighter mb-2">{data.fullName}</h1>
+      <p className="text-lg font-medium opacity-80">{data.location}</p>
+    </div>
+
+    <div className="grid grid-cols-1 gap-8">
+      <div className="flex gap-4 text-sm font-bold border-b-4 border-black pb-4">
+        <div className="bg-black text-white px-2 py-1">CONTACT</div>
+        <span>{data.email}</span>
+        <span>/</span>
+        <span>{data.phone}</span>
+        <span>/</span>
+        <span>{data.website}</span>
+      </div>
+
+      {data.summary && (
+        <section>
+          <h2 className="text-2xl font-black uppercase mb-2">About</h2>
+          <p className="text-base font-medium leading-relaxed">{data.summary}</p>
+        </section>
+      )}
+
+      <section>
+        <h2 className="text-2xl font-black uppercase mb-4 bg-yellow-400 inline-block px-2 transform -rotate-1">Experience</h2>
+        <div className="space-y-6 border-l-4 border-black pl-6 ml-2">
+          {data.experience.map((exp) => (
+            <div key={exp.id}>
+              <div className="flex justify-between items-baseline">
+                <h3 className="text-xl font-bold">{exp.role}</h3>
+                <span className="font-bold text-sm bg-black text-white px-2 py-1">{exp.duration}</span>
+              </div>
+              <div className="text-lg font-bold mb-2">{exp.company}</div>
+              <p className="font-medium text-gray-700">{exp.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="grid grid-cols-2 gap-8">
+        <section>
+          <h2 className="text-xl font-black uppercase mb-4 bg-yellow-400 inline-block px-2 transform rotate-1">Skills</h2>
+          <div className="flex flex-wrap gap-2">
+            {data.skills.split(',').map((s, i) => (
+              <span key={i} className="border-2 border-black px-2 py-1 font-bold text-sm hover:bg-black hover:text-white transition-colors">
+                {s.trim().toUpperCase()}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        <section>
+           <h2 className="text-xl font-black uppercase mb-4 bg-yellow-400 inline-block px-2">Education</h2>
+           <div className="space-y-4">
+             {data.education.map((edu) => (
+               <div key={edu.id} className="border-b-2 border-gray-200 pb-2">
+                 <div className="font-black">{edu.school}</div>
+                 <div>{edu.degree}</div>
+                 <div className="text-sm font-bold text-gray-500">{edu.year}</div>
+               </div>
+             ))}
+           </div>
+        </section>
       </div>
     </div>
   </div>
